@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+<meta name="theme-color" content="#0b1220">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Muscle Comeback">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon-180.png">
+<title>5-Day Muscle Comeback</title>
+<style>
+:root{
+  --bg:#0b1220;--card:#111827;--card2:#172033;--text:#f8fafc;
+  --muted:#9ca3af;--accent:#60a5fa;--accent2:#22c55e;--border:#263247;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;min-height:100%;background:var(--bg);color:var(--text)}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+  background:linear-gradient(180deg,#0b1220,#0f172a);
+  padding-bottom:calc(88px + env(safe-area-inset-bottom));
+}
+header{
+  position:sticky;top:0;z-index:10;background:rgba(11,18,32,.96);
+  backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+  padding:calc(14px + env(safe-area-inset-top)) 16px 10px;
+  border-bottom:1px solid var(--border);
+}
+h1{font-size:22px;margin:0 0 4px}
+.subtitle{color:var(--muted);font-size:13px}
+.tabs{display:flex;gap:8px;overflow-x:auto;padding:12px 0 2px;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab{
+  flex:0 0 auto;border:1px solid var(--border);background:var(--card);color:var(--text);
+  padding:10px 14px;border-radius:999px;font-weight:700;font-size:13px
+}
+.tab.active{background:var(--accent);color:#08111f;border-color:var(--accent)}
+main{padding:16px;max-width:760px;margin:0 auto}
+.day{display:none}.day.active{display:block}
+.day h2{font-size:21px;margin:8px 0 2px}
+.focus{color:var(--muted);font-size:14px;margin-bottom:14px}
+.exercise{
+  background:var(--card);border:1px solid var(--border);border-radius:16px;
+  padding:14px;margin:12px 0;box-shadow:0 8px 24px rgba(0,0,0,.14)
+}
+.row{display:grid;grid-template-columns:32px 1fr;gap:10px;align-items:start}
+.done{width:24px;height:24px;margin-top:2px;accent-color:var(--accent2)}
+.exercise-name{font-size:16px;font-weight:800;line-height:1.25}
+.sets{font-size:13px;color:var(--muted);margin-top:4px}
+.inputs{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}
+label{font-size:11px;color:var(--muted);display:block;margin-bottom:4px}
+input[type="number"],input[type="text"]{
+  width:100%;background:var(--card2);color:var(--text);border:1px solid var(--border);
+  border-radius:10px;padding:11px 10px;font-size:16px;outline:none
+}
+input:focus{border-color:var(--accent)}
+.notes{margin-top:8px}
+.tipbox{
+  background:#0f1b2e;border:1px solid #24334d;border-radius:14px;
+  padding:14px;margin:14px 0;color:#dbeafe;font-size:14px;line-height:1.45
+}
+.progress{height:8px;background:#182235;border-radius:999px;overflow:hidden;margin-top:10px}
+.progress>div{height:100%;background:var(--accent2);width:0}
+.footerbar{
+  position:fixed;left:0;right:0;bottom:0;padding:10px 14px calc(10px + env(safe-area-inset-bottom));
+  background:rgba(11,18,32,.97);border-top:1px solid var(--border);
+  display:flex;gap:8px;z-index:20
+}
+.btn{flex:1;border:0;border-radius:12px;padding:13px 12px;font-size:14px;font-weight:800}
+.btn.secondary{background:#1f2937;color:#fff}
+.btn.danger{background:#3a171b;color:#fecaca}
+.small{font-size:12px;color:var(--muted);line-height:1.45}
+.install-note{
+  display:none;margin:12px 0;padding:12px;border-radius:12px;background:#162133;
+  border:1px solid var(--border);font-size:13px;color:#dbeafe
+}
+@media(max-width:420px){
+  .inputs{grid-template-columns:1fr 1fr}
+  .inputs .full{grid-column:1/-1}
+}
+</style>
+</head>
+<body>
+<header>
+  <h1>5-Day Muscle Comeback</h1>
+  <div class="subtitle">Weights, reps, notes, and progress save on this device.</div>
+  <div class="tabs" id="tabs"></div>
+</header>
+
+<main id="app"></main>
+
+<div class="footerbar">
+  <button class="btn secondary" onclick="clearChecks()">Clear Today's Checks</button>
+  <button class="btn danger" onclick="resetAll()">Reset All</button>
+</div>
+
+<script>
+const workouts = [
+  {title:"Day 1 — Push",focus:"Chest • Shoulders • Triceps",
+   tip:"Weeks 1–2: stop each set with about 3–4 reps still in reserve. Use controlled reps and avoid chasing failure.",
+   exercises:[
+    ["Barbell or Machine Bench Press","3 × 6–10"],["Incline Dumbbell Press","3 × 8–12"],
+    ["Seated Dumbbell or Machine Shoulder Press","2 × 8–12"],["Cable or Dumbbell Lateral Raises","3 × 12–15"],
+    ["Pec Deck or Cable Fly","2 × 10–15"],["Rope Triceps Pushdown","3 × 10–15"],
+    ["Overhead Cable Triceps Extension","2 × 10–15"]]},
+  {title:"Day 2 — Pull",focus:"Back • Rear Delts • Biceps",
+   tip:"Favor chest-supported rows while rebuilding conditioning so your back gets trained hard without unnecessarily exhausting your lower back.",
+   exercises:[
+    ["Lat Pulldown","3 × 8–12"],["Chest-Supported Row","3 × 8–12"],["Seated Cable Row","2 × 10–12"],
+    ["Face Pull or Reverse Pec Deck","3 × 12–15"],["Dumbbell Curl","3 × 8–12"],
+    ["Hammer Curl","2 × 10–15"],["Optional: Back Extension","2 × 10–15"]]},
+  {title:"Day 3 — Legs + Core",focus:"Quads • Hamstrings • Glutes • Calves • Core",
+   tip:"Leg press or hack squat is a good re-entry choice before returning to heavy barbell squats.",
+   exercises:[
+    ["Leg Press or Hack Squat","3 × 8–12"],["Romanian Deadlift","3 × 8–10"],["Leg Extension","2 × 10–15"],
+    ["Seated or Lying Leg Curl","3 × 10–15"],["Walking Lunges","2 × 8–10 each leg"],
+    ["Standing or Seated Calf Raise","3 × 10–15"],["Cable Crunch","3 × 10–15"],["Plank","2 × 30–60 sec"]]},
+  {title:"Day 4 — Upper",focus:"Chest • Back • Shoulders • Arms",
+   tip:"This is your second upper-body stimulus of the week. Keep technique clean and don't turn it into a max-effort session.",
+   exercises:[
+    ["Incline Machine or Barbell Press","3 × 8–12"],["Neutral-Grip Lat Pulldown","3 × 8–12"],
+    ["Machine or Cable Row","3 × 8–12"],["Machine Chest Press","2 × 10–12"],["Lateral Raise","3 × 12–15"],
+    ["Rear-Delt Fly","2 × 12–15"],["Cable Curl","2 × 10–15"],["Triceps Pushdown","2 × 10–15"]]},
+  {title:"Day 5 — Lower + Finish",focus:"Legs • Glutes • Core • Grip • Traps",
+   tip:"Farmer's carries finish the week with grip, traps, shoulders, core, upper back and legs working together.",
+   exercises:[
+    ["Goblet, Hack, or Smith Squat","3 × 8–12"],["Hip Thrust or Glute Bridge","3 × 8–12"],
+    ["Leg Curl","3 × 10–15"],["Bulgarian Split Squat","2 × 8–10 each leg"],["Calf Raise","3 × 12–15"],
+    ["Cable Crunch or Hanging Knee Raise","3 × 10–15"],["Farmer's Carry","3 × 30–45 sec"]]}
+];
+
+let activeDay = Number(localStorage.getItem("activeDay") || 0);
+function key(day,ex,field){return `workout_d${day}_e${ex}_${field}`}
+
+function build(){
+  const tabs=document.getElementById("tabs"),app=document.getElementById("app");
+  tabs.innerHTML="";app.innerHTML="";
+  workouts.forEach((day,di)=>{
+    const tab=document.createElement("button");
+    tab.className="tab"+(di===activeDay?" active":"");
+    tab.textContent=`Day ${di+1}`;tab.onclick=()=>showDay(di);tabs.appendChild(tab);
+
+    const section=document.createElement("section");
+    section.className="day"+(di===activeDay?" active":"");section.id=`day-${di}`;
+    const doneCount=day.exercises.filter((_,ei)=>localStorage.getItem(key(di,ei,"done"))==="1").length;
+    const pct=Math.round(doneCount/day.exercises.length*100);
+    section.innerHTML=`
+      <h2>${day.title}</h2><div class="focus">${day.focus}</div>
+      <div class="progress"><div id="progress-${di}" style="width:${pct}%"></div></div>
+      <div class="small" id="progressText-${di}">${doneCount} of ${day.exercises.length} exercises complete</div>
+      <div class="tipbox">${day.tip}</div>`;
+
+    day.exercises.forEach((ex,ei)=>{
+      const [name,sets]=ex, card=document.createElement("div");
+      card.className="exercise";
+      const checked=localStorage.getItem(key(di,ei,"done"))==="1";
+      const vals=["w1","w2","w3"].map(f=>localStorage.getItem(key(di,ei,f))||"");
+      const notes=localStorage.getItem(key(di,ei,"notes"))||"";
+      card.innerHTML=`
+        <div class="row">
+          <input class="done" type="checkbox" ${checked?"checked":""} onchange="saveDone(${di},${ei},this.checked)">
+          <div><div class="exercise-name">${name}</div><div class="sets">${sets}</div></div>
+        </div>
+        <div class="inputs">
+          <div><label>Set 1 weight</label><input inputmode="decimal" type="number" step="any" value="${vals[0]}" oninput="saveField(${di},${ei},'w1',this.value)" placeholder="lbs"></div>
+          <div><label>Set 2 weight</label><input inputmode="decimal" type="number" step="any" value="${vals[1]}" oninput="saveField(${di},${ei},'w2',this.value)" placeholder="lbs"></div>
+          <div><label>Set 3 weight</label><input inputmode="decimal" type="number" step="any" value="${vals[2]}" oninput="saveField(${di},${ei},'w3',this.value)" placeholder="lbs"></div>
+        </div>
+        <div class="notes"><label>Notes / reps used</label>
+          <input type="text" value="${notes.replace(/"/g,'&quot;')}" oninput="saveField(${di},${ei},'notes',this.value)" placeholder="Example: 10, 9, 8 — increase next week">
+        </div>`;
+      section.appendChild(card);
+    });
+    app.appendChild(section);
+  });
+}
+function showDay(di){activeDay=di;localStorage.setItem("activeDay",String(di));build();window.scrollTo({top:0,behavior:"smooth"})}
+function saveField(di,ei,field,value){localStorage.setItem(key(di,ei,field),value)}
+function saveDone(di,ei,checked){localStorage.setItem(key(di,ei,"done"),checked?"1":"0");updateProgress(di)}
+function updateProgress(di){
+  const total=workouts[di].exercises.length;
+  let done=0;workouts[di].exercises.forEach((_,ei)=>{if(localStorage.getItem(key(di,ei,"done"))==="1")done++});
+  document.getElementById(`progress-${di}`).style.width=`${Math.round(done/total*100)}%`;
+  document.getElementById(`progressText-${di}`).textContent=`${done} of ${total} exercises complete`;
+}
+function clearChecks(){
+  workouts[activeDay].exercises.forEach((_,ei)=>localStorage.removeItem(key(activeDay,ei,"done")));build()
+}
+function resetAll(){
+  if(confirm("Reset all saved weights, notes, and completion checks?")){
+    const keep=localStorage.getItem("activeDay");
+    Object.keys(localStorage).filter(k=>k.startsWith("workout_")).forEach(k=>localStorage.removeItem(k));
+    if(keep!==null)localStorage.setItem("activeDay",keep);build()
+  }
+}
+if("serviceWorker" in navigator){
+  window.addEventListener("load",()=>navigator.serviceWorker.register("./service-worker.js").catch(()=>{}));
+}
+build();
+</script>
+</body>
+</html>

@@ -96,10 +96,13 @@ body{
   font-family:"Anton",Impact,"Barlow Semi Condensed",sans-serif;
   font-size:19px; letter-spacing:.045em; text-transform:uppercase;
   line-height:1; margin:0; color:var(--ink);
+  white-space:nowrap;          /* the name has a space in it — never let it stack */
 }
+@media (max-width:370px){ .wordmark{font-size:16.5px; letter-spacing:.03em} }
+@media (max-width:340px){ .wordmark{font-size:14px; letter-spacing:.02em} .weeklabel{min-width:62px; padding:0 4px} }
 .wordmark span{color:var(--accent)}
 .weekpick{
-  display:flex; align-items:center; gap:2px;
+  display:flex; align-items:center; gap:2px; flex:none;
   background:var(--surface-2); border:1px solid var(--line);
   border-radius:999px; padding:2px;
 }

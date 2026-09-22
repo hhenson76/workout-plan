@@ -1,7 +1,7 @@
 {
-  "name": "Comeback Block",
-  "short_name": "Comeback",
-  "description": "A five-day comeback training log with weight fields, exercise swaps and equipment filtering.",
+  "name": "Workout Tracker",
+  "short_name": "Workout",
+  "description": "A five-day training log with weight fields, exercise swaps and equipment filtering.",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",

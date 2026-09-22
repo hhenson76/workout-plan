@@ -1,4 +1,4 @@
-# Comeback Block
+# Workout Tracker
 
 A five-day training log for getting back under the bar after time off. Push / Pull / Legs / Upper / Lower, with a weight and rep field for every set, last week's numbers under each row, and an exercise library that filters itself down to the equipment you actually have.
 
@@ -31,10 +31,10 @@ LICENSE                  MIT
 
 ## Putting it on GitHub Pages
 
-1. Create a new repository — `comeback-block` is a fine name. Public is simplest; Pages on a private repo needs a paid plan.
-2. Upload every file above, keeping `assets/` as a folder. On github.com: **Add file → Upload files**, then drag the whole folder in.
+1. Create a repository. Public is simplest; Pages on a private repo needs a paid plan.
+2. Upload every file above — the *contents* of this folder, not the folder itself, so `index.html` lands at the repo root. Keep `assets/` as a folder. On github.com: **Add file → Upload files**, then drag them in.
 3. **Settings → Pages**. Under *Build and deployment*, set **Source** to `Deploy from a branch`, branch `main`, folder `/ (root)`. Save.
-4. Wait a minute or two, then open `https://<your-username>.github.io/comeback-block/`.
+4. Wait a minute or two, then open `https://<your-username>.github.io/<repo-name>/`.
 5. On your phone, open that URL and add it to your home screen — **Share → Add to Home Screen** on iOS, **⋮ → Add to Home screen** on Android. It then opens full-screen with no browser chrome.
 
 HTTPS matters here: the service worker and the install prompt only work over HTTPS (or `localhost`). GitHub Pages gives you HTTPS automatically.
@@ -51,7 +51,9 @@ Then open `http://localhost:8000/`.
 
 ## Where your data lives
 
-In your browser's `localStorage`, on that device, under the key `comeback-block-v2`. It never leaves the device and there's no server involved.
+In your browser's `localStorage`, on that device, under the key `workout-tracker-v1`. It never leaves the device and there's no server involved.
+
+Logs written before the app was renamed live under `comeback-block-v2`; the app reads that key once if the new one is empty, so nothing is lost in the rename.
 
 The trade-off is that your phone and your laptop keep separate logs, and clearing site data wipes it. **Guide → Export backup** writes a JSON file; **Import backup** reads one back. Export before switching phones.
 

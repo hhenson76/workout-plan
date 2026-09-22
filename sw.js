@@ -1,6 +1,6 @@
-/* Comeback Block service worker — offline-first app shell.
+/* Workout Tracker service worker — offline-first app shell.
    Bump CACHE when you change any file in SHELL, or phones keep serving the old copy. */
-var CACHE = "comeback-block-v4";
+var CACHE = "workout-tracker-v1";
 var SHELL = [
   "./",
   "./index.html",

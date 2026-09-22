@@ -301,7 +301,9 @@
   ];
 
   /* ============ state ============ */
-  var LS_KEY = "comeback-block-v2";
+  var LS_KEY = "workout-tracker-v1";
+  var LS_LEGACY = "comeback-block-v2";   /* pre-rename key; read once, then migrate */
+  var migrated = false;
   var state = {
     week:1, day:"push", log:{}, notes:{}, pick:{},
     eq:JSON.parse(JSON.stringify(DEFAULT_EQ)), autovary:false, updatedAt:0
@@ -311,6 +313,7 @@
   function loadLocal(){
     try{
       var raw = localStorage.getItem(LS_KEY);
+      if(!raw){ raw = localStorage.getItem(LS_LEGACY); if(raw) migrated = true; }
       if(raw){ var p = JSON.parse(raw); if(p && typeof p === "object") merge(p); }
     }catch(e){}
   }
@@ -755,7 +758,7 @@
     var blob = new Blob([JSON.stringify(state, null, 2)], { type:"application/json" });
     var url = URL.createObjectURL(blob);
     var a = document.createElement("a");
-    a.href = url; a.download = "comeback-block-" + stamp() + ".json";
+    a.href = url; a.download = "workout-tracker-" + stamp() + ".json";
     document.body.appendChild(a); a.click(); document.body.removeChild(a);
     setTimeout(function(){ URL.revokeObjectURL(url); }, 1000);
   });
@@ -775,7 +778,7 @@
         merge(parsed); save(); renderAll();
         status.textContent = "Backup loaded. " + Object.keys(state.log).length + " logged sets restored.";
       }catch(e){
-        status.textContent = "That file isn't a Comeback Block backup.";
+        status.textContent = "That file isn't a Workout Tracker backup.";
       }
       input.value = "";
     };
@@ -785,6 +788,7 @@
   /* ============ boot ============ */
   loadLocal();
   renderAll();
+  if(migrated) save();   /* rewrite the pre-rename log under the new key */
   stickTabs();
   setTimeout(stickTabs, 400);
   setSync(true, "Saved on this device");

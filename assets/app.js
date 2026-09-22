@@ -550,7 +550,7 @@
       return '<article class="card' + (allDone ? " done" : "") + '" data-slot="' + slot.id + '">' +
         '<div class="chead">' +
           '<div class="cname">' + opt.name +
-            '<span class="cmeta">' + slot.role + ' &middot; <span class="eq">' + eqTag(opt) + '</span></span>' +
+            '<span class="cmeta">' + slot.role + ' <span class="eq">&middot; ' + eqTag(opt) + '</span></span>' +
           '</div>' +
           '<div class="cright"><span class="ctarget">' + target + '</span>' +
             '<button class="swap" type="button" data-swap="' + slot.id + '" ' +

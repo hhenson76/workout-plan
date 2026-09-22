@@ -65,7 +65,11 @@ body{
   -webkit-text-size-adjust:100%;
 }
 .shell{
-  max-width:520px; margin:0 auto; min-height:100vh;
+  max-width:520px; margin:0 auto;
+  min-height:100vh;
+  min-height:100dvh;
+  padding-left:env(safe-area-inset-left, 0px);
+  padding-right:env(safe-area-inset-right, 0px);
   background:var(--ground);
   border-left:1px solid var(--line-soft); border-right:1px solid var(--line-soft);
   display:flex; flex-direction:column;
@@ -73,7 +77,20 @@ body{
 @media (max-width:540px){ .shell{border:0} }
 
 /* ---------- header ---------- */
-.topbar{position:sticky; top:0; z-index:30; background:var(--surface); border-bottom:1px solid var(--line)}
+/* padding-top clears the status bar / notch when installed to the home screen,
+   where the page paints edge to edge. It resolves to 0 in a normal browser tab. */
+.topbar{
+  position:sticky; top:0; z-index:30;
+  background:var(--surface); border-bottom:1px solid var(--line);
+  padding-top:env(safe-area-inset-top, 0px);
+}
+/* iOS paints the status bar text white over an installed app, so the strip behind
+   it stays dark in BOTH themes — otherwise light mode is white text on white. */
+.topbar::before{
+  content:""; position:absolute; top:0; left:0; right:0;
+  height:env(safe-area-inset-top, 0px);
+  background:#0D0F13;
+}
 .topbar-row{display:flex; align-items:center; justify-content:space-between; gap:12px; padding:12px 16px 10px}
 .wordmark{
   font-family:"Anton",Impact,"Barlow Semi Condensed",sans-serif;
@@ -186,7 +203,7 @@ main{flex:1; padding:0 12px 96px}
   letter-spacing:.09em; text-transform:uppercase; color:var(--ink-3);
   display:block; margin-top:3px;
 }
-.cmeta .eq{color:var(--ink-2)}
+.cmeta .eq{color:var(--ink-2); white-space:nowrap}
 .cright{display:flex; align-items:center; gap:6px; flex:none}
 .ctarget{
   font-family:"Barlow Semi Condensed",sans-serif; font-weight:700; font-size:12px;
@@ -295,7 +312,9 @@ textarea:focus{outline:none; border-color:var(--accent); box-shadow:0 0 0 3px va
 /* ---------- sheets ---------- */
 .scrim{position:fixed; inset:0; z-index:40; background:rgba(10,12,16,.5); display:flex; align-items:flex-end; justify-content:center}
 .sheet{
-  width:100%; max-width:520px; max-height:88vh; overflow-y:auto;
+  width:100%; max-width:520px; overflow-y:auto;
+  max-height:88vh;
+  max-height:calc(88dvh - env(safe-area-inset-top, 0px));
   background:var(--ground); border-top-left-radius:16px; border-top-right-radius:16px;
   border:1px solid var(--line); border-bottom:0;
   padding:0 16px calc(24px + env(safe-area-inset-bottom));

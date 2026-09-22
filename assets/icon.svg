@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Comeback Block">
+  <rect width="512" height="512" rx="112" fill="#E2450F"/>
+  <g fill="#FFF4EF">
+    <rect x="112" y="240" width="288" height="32" rx="12"/>
+    <rect x="92"  y="172" width="46"  height="168" rx="18"/>
+    <rect x="374" y="172" width="46"  height="168" rx="18"/>
+    <rect x="148" y="204" width="34"  height="104" rx="14"/>
+    <rect x="330" y="204" width="34"  height="104" rx="14"/>
+  </g>
+</svg>
